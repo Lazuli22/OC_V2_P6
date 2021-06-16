@@ -1,0 +1,49 @@
+header {
+    background: rgb(85, 102, 113);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: larger;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+nav {
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+nav a {
+    color: white;
+}
+
+#video_centrale {
+    display: flex;
+    border: 5px rgb(124, 119, 119) solid;
+}
+
+body {
+    background-color: rgb(20, 19, 19);
+    color: whitesmoke;
+}
+
+#container {
+    border: 5px black solid;
+    display: flex;
+}
+
+#container_romance {
+    border: 5px black solid;
+    display: flex;
+}
+
+#container_two_thousand {
+    border: 5px black solid;
+    display: flex;
+}
+
+#container_brad {
+    border: 5px black solid;
+    display: flex;
+}
