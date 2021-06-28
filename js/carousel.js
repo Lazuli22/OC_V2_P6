@@ -1,4 +1,4 @@
-class Carousel {
+export class Carousel {
 
     /**
      * constructor of the Carousel class
@@ -8,18 +8,6 @@ class Carousel {
      * @param {Object} options.slidesVisible number of slides to show
      */
     constructor(element, options = {}) {
-        console.log("Hello")
+        console.log("Hello");
     }
 }
-
-
-window.addEventListener("DOMContentloaded",
-    function() {
-        console.log("DOM entièrement chargé et analysé");
-        new Carousel(document.querySelector("conteneur"), {
-            slidesToScroll: 2,
-            slidesVisible: 5
-
-        });
-    }
-);
