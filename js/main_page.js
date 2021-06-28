@@ -22,6 +22,7 @@ class Carousel {
      * method that creates a div element with a className = "className"
      * @param {String} className
      * @returns {HTMLElement} 
+     
      */
     createDivWithClass(className) {
         let div = document.createElement('div');
