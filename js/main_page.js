@@ -7,10 +7,13 @@ class Carousel {
      * @param {Object} options.slidesToScroll number of slides to scroll
      * @param {Object} options.slidesVisible number of slides to show
      */
-    constructor(element, options = {}) {
-        this.element = element;
+    constructor(categorie, element, options = {}) {
+        this.categorie = categorie;
+        this.prevButton = categorie.querySelector("div.carousel_prev");
+        this.nextButton = categorie.querySelector("div.carousel_next");
+        this.casourel = element;
         this.currentSlide = 0;
-        //console.log(element);
+        console.log(categorie);
         this.options = Object.assign({}, {
             slidesToScroll: 1,
             slidesVisible: 1
@@ -19,33 +22,11 @@ class Carousel {
     }
 
     /**
-     * method that creates a div element with a className = "className"
-     * @param {String} className
-     * @returns {HTMLElement} 
-     
-     */
-    createDivWithClass(className) {
-        let div = document.createElement('div');
-        div.setAttribute('class', className);
-        return div;
-
-    }
-
-    /**
-     * methode that creates navigation button
+     * method that creates navigation button
      */
     createNavigation() {
-        let nextButton = document.createElement('div');
-        nextButton.setAttribute('id', "carousel__next");
-        nextButton.innerHTML = `<img src= "images/right.svg" 
-        style="width:50px; height:50px; background-color:white;border-radius:50px; margin-top:-20px;" alt="carousel__next"></img>`;
-        let prevButton = document.createElement('div');
-        prevButton.setAttribute('id', "casourel__prev");
-        // console.log(this.container);
-        this.element.appendChild(nextButton);
-        this.element.appendChild(prevButton);
-        nextButton.addEventListener('click', this.next.bind(this));
-        prevButton.addEventListener('click', this.prev.bind(this));
+        this.prevButton.addEventListener('click', this.prev.bind(this));
+        this.nextButton.addEventListener('click', this.next.bind(this));
     }
 
     next() {
@@ -54,7 +35,6 @@ class Carousel {
 
     prev() {
         this.gotoItem(this.currentSlide - this.options.slidesToScroll);
-
     }
 
     /**
@@ -62,11 +42,19 @@ class Carousel {
      * @param {number} index 
      */
     gotoItem(index) {
-        let translateX = index * -100 / (this.element.children.length - 2);
-        this.element.style.transform = 'translate3d(' + translateX + '%,0,0)';
+        console.log(index)
+        if (index <= -this.casourel.children.length || index == 1) {
+            index = 0;
+        }
+        let translateX = index * 100 / (this.casourel.children.length);
+        this.casourel.style.transform = 'translate3d(' + translateX + '%,0,0)';
         this.currentSlide = index;
     }
 }
+
+/**
+ * When DOM loaded 
+ */
 
 window.addEventListener("DOMContentLoaded", (event) => {
     bestMovieRecorded();
@@ -74,12 +62,34 @@ window.addEventListener("DOMContentLoaded", (event) => {
     twoThousandMovies();
     bradMovies();
     console.log("DOM entièrement chargé et analysé");
-    new Carousel(document.querySelector("#carousel_romance"), {
-        slidesToScroll: 2,
+    new Carousel(document.getElementById("categorie_best_movies"), document.querySelector("#carousel_best_movies"), {
+        slidesToScroll: 1,
         slidesVisible: 8
 
     });
 
+    new Carousel(document.getElementById("categorie_romance"), document.querySelector("#carousel_romance"), {
+        slidesToScroll: 1,
+        slidesVisible: 8
+
+    });
+    new Carousel(document.getElementById("categorie_two_thousand"), document.querySelector("#carousel_two_thousand"), {
+        slidesToScroll: 1,
+        slidesVisible: 8
+
+    });
+
+    new Carousel(document.getElementById("categorie_brad"), document.querySelector("#carousel_brad"), {
+        slidesToScroll: 1,
+        slidesVisible: 8
+
+    });
+
+    var myModal = document.querySelector("#myModal");
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function() {
+        myModal.style.display = "none";
+    }
 
 });
 
@@ -94,22 +104,88 @@ function bestMovieRecorded() {
         .then(res => res.json())
         .then(res => res.results)
         .then(function(value) {
-            let bestMovie = value[0].image_url;
-            document
-                .getElementById("video_centrale")
-                .innerHTML = `<img src= ${bestMovie} alt='video centrale'></img>`;
-            for (let i = 0; i < value.length; i++) {
+            let bestMovie_url = value[0].image_url;
+            let bestMovie_name = value[0].title;
+            let bestMovie_url_des = value[0].url;
+            let bestMovie_des = "";
+            fetch(bestMovie_url_des)
+                .then((res) => res.json())
+                .then((res) => {
+                    bestMovie_des = res.description;
+                    document
+                        .getElementById("video_centrale")
+                        .innerHTML = `
+                <div><img src= ${bestMovie_url} alt='video centrale'></img></div>
+                <div><H3>${bestMovie_name}</H3>
+                    <p>${bestMovie_des}</p>
+                </div>`;
+                });
+            var btn = document.querySelector("#best_movie");
+            btn.onclick = function() {
+                myModal.style.display = "block";
+                getMovieData(bestMovie_url_des);
+            }
+            for (let i = 1; i < value.length; i++) {
                 let movie = value[i].image_url;
                 let name = value[i].id;
+                let movie_url = value[i].url;
                 //console.log(movie);
-                new_elt = document.createElement('div');
-                let elt = document.getElementById("casourel_best_movies");
-                elt.appendChild(new_elt)
-                    .innerHTML = `<div id=${name}>
-                        <img src= ${movie} alt='casourel'></img></div>`;
+                let elt = document.getElementById("carousel_best_movies");
+                let elt_item = document.createElement('div');
+                elt_item.setAttribute('class', 'casourel_item');
+                elt.appendChild(elt_item);
+                let div = document.createElement('div');
+                div.setAttribute('id', name);
+                div.innerHTML = `<img src= ${movie} alt='img_casourel'></img>`;
+                elt_item.appendChild(div);
+                let img = document.getElementById(`${name}`);
+                img.onclick = function() {
+                    myModal.style.display = "block";
+                    getMovieData(movie_url);
+                }
+
             }
         });
 }
+
+/**
+ * function that load data of a movie
+ */
+function getMovieData(movie_url_des) {
+    fetch(movie_url_des)
+        .then((res) => res.json())
+        .then((res) => {
+            movie_title = res.original_title;
+            movie_type = res.genres;
+            movie_des = res.description;
+            movie_url = res.image_url;
+            movie_release_date = res.date_published;
+            movie_rated = res.rated;
+            movie_imbd = res.imdb_score;
+            movie_directors = res.directors;
+            movie_actors = res.actors;
+            movie_duration = res.duration;
+            movie_countries = res.countries;
+            movie_votes = res.avg_vote;
+            document
+                .getElementById("movie_data")
+                .innerHTML = `
+                    <div><img src= ${movie_url} alt='movie'></img></div>
+                    <div><H2>${movie_title}</H2>
+                        <p> <B>Durée :</B>${movie_duration}</p>
+                        <p> <B>Genre : </B> ${movie_type} </p>
+                        <p> <B>Date de sortie : </B>${movie_release_date}</p>
+                        <p> <B>Moyenne des votes :</B> ${movie_rated} </p>
+                        <p> <B>Score Imbd :</B> ${movie_rated}</p>
+                        <p> <B>Réalisateur :</B>${movie_directors}</p>
+                        <p> <B>Pays d'origine : </B> ${movie_countries} </p>
+                        <p> <B>Liste des acteurs :</B> ${movie_actors}</p>
+                        <p> <B>Résultat box office : </B> ${movie_votes} </p>
+                        <p> <B>Résumé :</B> ${movie_des} </p>
+                    </div>`
+        });
+}
+
 
 /**
  * function that loads 10 first best romantic movies
@@ -124,6 +200,7 @@ function romanticMovies() {
             for (let i = 0; i < value.length; i++) {
                 let movie = value[i].image_url;
                 let name = value[i].id;
+                let movie_url = value[i].url;
                 let elt = document.getElementById("carousel_romance");
                 let elt_item = document.createElement('div');
                 elt_item.setAttribute('class', 'casourel_item');
@@ -132,6 +209,11 @@ function romanticMovies() {
                 div.setAttribute('id', name);
                 div.innerHTML = `<img src= ${movie} alt='casourel'></img>`;
                 elt_item.appendChild(div);
+                let img = document.getElementById(`${name}`);
+                img.onclick = function() {
+                    myModal.style.display = "block";
+                    getMovieData(movie_url);
+                }
             }
         });
 }
@@ -148,11 +230,22 @@ function twoThousandMovies() {
             for (let i = 0; i < value.length; i++) {
                 let movie = value[i].image_url;
                 let name = value[i].id;
+                let movie_url = value[i].url;
                 //console.log(movie);
-                new_elt = document.createElement('div');
-                let elt = document.getElementById("container_two_thousand");
-                elt.appendChild(new_elt).innerHTML = `<div id=${name}>
-                        <img src= ${movie} alt='casourel'></img></div>`;
+                elt_item = document.createElement('div');
+                let elt = document.getElementById("carousel_two_thousand");
+                elt_item.setAttribute('class', 'casourel_item');
+                elt.appendChild(elt_item);
+                let div = document.createElement('div');
+                div.setAttribute('id', name);
+                div.innerHTML = `<img src= ${movie} alt='casourel'></img>`;
+                elt_item.appendChild(div);
+                let img = document.getElementById(`${name}`);
+                img.onclick = function() {
+                    myModal.style.display = "block";
+                    getMovieData(movie_url);
+                }
+
             }
         });
 }
@@ -169,11 +262,28 @@ function bradMovies() {
             for (let i = 0; i < value.length; i++) {
                 let movie = value[i].image_url;
                 let name = value[i].id;
+                let movie_url = value[i].url;
                 //console.log(movie);
-                new_elt = document.createElement('div');
-                let elt = document.getElementById("container_brad");
-                elt.appendChild(new_elt).innerHTML = `<div id=${name}>
-                        <img src= ${movie} alt='cassourrel'></img></div>`;
+                elt_item = document.createElement('div');
+                let elt = document.getElementById("carousel_brad");
+                elt_item.setAttribute('class', 'casourel_item');
+                elt.appendChild(elt_item);
+                let div = document.createElement('div');
+                div.setAttribute('id', name);
+                div.innerHTML = `<img src= ${movie} alt='casourel'></img>`;
+                elt_item.appendChild(div);
+                let img = document.getElementById(`${name}`);
+                img.onclick = function() {
+                    myModal.style.display = "block";
+                    getMovieData(movie_url);
+                }
             }
         });
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == myModal) {
+        myModal.style.display = "none";
+    }
 }

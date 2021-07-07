@@ -9,6 +9,12 @@
 </head>
 
 <body>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="movie_data"></div>
+        </div>
+    </div>
     <header>
         <nav>
             <p><a href="#">Accueil</a></p>
@@ -17,31 +23,57 @@
         </nav>
     </header>
     <br/>
-    <div id="video_centrale">
-    </div>
+    <section id="film_vedette">
+        <h2>Film Vedette</h2>
+        <div id="video_centrale">
+        </div>
+        <div>
+            <button id="best_movie" class="best_movie">Détails</button>
+        </div>
+    </section>
+
     <br/>
-    <section id="films_mieux_notes">
-        <H2>Films les mieux notés</H2>
-        <div id="casourel_best_movies"></div>
+    <section id="categorie_best_movies">
+        <H2>7 films les mieux notés</H2>
+        <div class="container">
+            <div class="carousel_prev">◀</div>
+            <div class="frame_carousel">
+                <div id="carousel_best_movies"></div>
+            </div>
+            <div class="carousel_next">▶</div>
+        </div>
     </section>
     <br/>
     <section id="categorie_romance">
-        <H2>Films Romantiques</H2>
-        <div id="carousel_romance"></div>
+        <H2>7 meilleurs films Romantiques</H2>
+        <div class="container">
+            <div class="carousel_prev">◀</div>
+            <div class="frame_carousel">
+                <div id="carousel_romance"></div>
+            </div>
+            <div class="carousel_next">▶</div>
+        </div>
     </section>
     <br/>
     <section id="categorie_two_thousand">
-        <H2>Films de l'année 2000</H2>
-        <div class="carousel_two_thousant">
-            <div id="container_two_thousand">
+        <H2>7 meilleurs films de l'année 2000</H2>
+        <div class="container">
+            <div class="carousel_prev">◀</div>
+            <div class="frame_carousel">
+                <div id="carousel_two_thousand"></div>
             </div>
+            <div class="carousel_next">▶</div>
         </div>
     </section>
     <br/>
     <section id="categorie_brad">
-        <H2>Films avec "Brad Pitt"</H2>
-        <div class="carousel_brad">
-            <div id="container_brad"></div>
+        <H2>7 meilleurs films avec "Brad Pitt"</H2>
+        <div class="container">
+            <div class="carousel_prev">◀</div>
+            <div class="frame_carousel">
+                <div id="carousel_brad"></div>
+            </div>
+            <div class="carousel_next">▶</div>
         </div>
     </section>
     <script src="js/main_page.js"></script>
