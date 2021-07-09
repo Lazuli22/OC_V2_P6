@@ -5,7 +5,6 @@ class Carousel {
      * @param {HTMLElement} element 
      * @param {Object} options 
      * @param {Object} options.slidesToScroll number of slides to scroll
-     * @param {Object} options.slidesVisible number of slides to show
      */
     constructor(categorie, element, options = {}) {
         this.categorie = categorie;
@@ -13,10 +12,8 @@ class Carousel {
         this.nextButton = categorie.querySelector("div.carousel_next");
         this.casourel = element;
         this.currentSlide = 0;
-        console.log(categorie);
         this.options = Object.assign({}, {
-            slidesToScroll: 1,
-            slidesVisible: 1
+            slidesToScroll: 1
         }, options);
         this.createNavigation();
     }
@@ -57,34 +54,25 @@ class Carousel {
  */
 
 window.addEventListener("DOMContentLoaded", (event) => {
+    /** Fetch data for each casourel */
     bestMovieRecorded();
     romanticMovies();
     twoThousandMovies();
     bradMovies();
     console.log("DOM entièrement chargé et analysé");
+    /** Instances each carrousel */
     new Carousel(document.getElementById("categorie_best_movies"), document.querySelector("#carousel_best_movies"), {
-        slidesToScroll: 1,
-        slidesVisible: 8
-
+        slidesToScroll: 2
     });
-
     new Carousel(document.getElementById("categorie_romance"), document.querySelector("#carousel_romance"), {
-        slidesToScroll: 1,
-        slidesVisible: 8
-
+        slidesToScroll: 2
     });
     new Carousel(document.getElementById("categorie_two_thousand"), document.querySelector("#carousel_two_thousand"), {
-        slidesToScroll: 1,
-        slidesVisible: 8
-
+        slidesToScroll: 2
     });
-
     new Carousel(document.getElementById("categorie_brad"), document.querySelector("#carousel_brad"), {
-        slidesToScroll: 1,
-        slidesVisible: 8
-
+        slidesToScroll: 2
     });
-
     var myModal = document.querySelector("#myModal");
     var span = document.getElementsByClassName("close")[0];
     span.onclick = function() {
@@ -93,6 +81,45 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
 });
 
+
+
+/**
+ * function that load data of a movie
+ */
+function getMovieData(movie_url_des) {
+    fetch(movie_url_des)
+        .then((res) => res.json())
+        .then((res) => {
+            movie_title = res.original_title;
+            movie_type = res.genres;
+            movie_des = res.description;
+            movie_url = res.image_url;
+            movie_release_date = res.date_published;
+            movie_rated = res.rated;
+            movie_imbd = res.imdb_score;
+            movie_directors = res.directors;
+            movie_actors = res.actors;
+            movie_duration = res.duration;
+            movie_countries = res.countries;
+            movie_votes = res.avg_vote;
+            document
+                .getElementById("movie_data")
+                .innerHTML = `
+                    <div><img src= ${movie_url} alt='movie'></img></div>
+                    <div><H2>${movie_title}</H2>
+                        <p> <B>Durée :</B>${movie_duration}</p>
+                        <p> <B>Genre : </B> ${movie_type} </p>
+                        <p> <B>Date de sortie : </B>${movie_release_date}</p>
+                        <p> <B>Moyenne des votes :</B> ${movie_rated} </p>
+                        <p> <B>Score Imbd :</B> ${movie_rated}</p>
+                        <p> <B>Réalisateur :</B>${movie_directors}</p>
+                        <p> <B>Pays d'origine : </B> ${movie_countries} </p>
+                        <p> <B>Liste des acteurs :</B> ${movie_actors}</p>
+                        <p> <B>Résultat box office : </B> ${movie_votes} </p>
+                        <p> <B>Résumé :</B> ${movie_des} </p>
+                    </div>`
+        });
+}
 
 /**
  * 
@@ -149,47 +176,7 @@ function bestMovieRecorded() {
 }
 
 /**
- * function that load data of a movie
- */
-function getMovieData(movie_url_des) {
-    fetch(movie_url_des)
-        .then((res) => res.json())
-        .then((res) => {
-            movie_title = res.original_title;
-            movie_type = res.genres;
-            movie_des = res.description;
-            movie_url = res.image_url;
-            movie_release_date = res.date_published;
-            movie_rated = res.rated;
-            movie_imbd = res.imdb_score;
-            movie_directors = res.directors;
-            movie_actors = res.actors;
-            movie_duration = res.duration;
-            movie_countries = res.countries;
-            movie_votes = res.avg_vote;
-            document
-                .getElementById("movie_data")
-                .innerHTML = `
-                    <div><img src= ${movie_url} alt='movie'></img></div>
-                    <div><H2>${movie_title}</H2>
-                        <p> <B>Durée :</B>${movie_duration}</p>
-                        <p> <B>Genre : </B> ${movie_type} </p>
-                        <p> <B>Date de sortie : </B>${movie_release_date}</p>
-                        <p> <B>Moyenne des votes :</B> ${movie_rated} </p>
-                        <p> <B>Score Imbd :</B> ${movie_rated}</p>
-                        <p> <B>Réalisateur :</B>${movie_directors}</p>
-                        <p> <B>Pays d'origine : </B> ${movie_countries} </p>
-                        <p> <B>Liste des acteurs :</B> ${movie_actors}</p>
-                        <p> <B>Résultat box office : </B> ${movie_votes} </p>
-                        <p> <B>Résumé :</B> ${movie_des} </p>
-                    </div>`
-        });
-}
-
-
-/**
  * function that loads 10 first best romantic movies
- * @param {HTMLElement} nameElement
  */
 
 function romanticMovies() {
@@ -251,7 +238,7 @@ function twoThousandMovies() {
 }
 
 /**
- * function that loads the 10 first  movies with Brad Pitt 
+ * function that loads the 10 first movies with Brad Pitt 
  */
 
 function bradMovies() {
